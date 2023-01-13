@@ -1,7 +1,6 @@
-package com.ivoronline.spring_boot_db_multitenant;
+package com.ivoronline.spring_boot_db_multitenant.config;
 
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 @Component
 public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
-  @Autowired private DataSource datasource;
+  private DataSource datasource;
 
   public TenantConnectionProvider(DataSource dataSource) {
     this.datasource = dataSource;
