@@ -11,9 +11,9 @@ public class DataSourceConfig {
   @Bean
   public DataSource dataSource()   {
     DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-                      dataSourceBuilder.url("jdbc:postgresql://localhost:5432/multitenant");
-                      dataSourceBuilder.username("postgres");
-                      dataSourceBuilder.password("letmein");
+                      dataSourceBuilder.url            ("jdbc:postgresql://localhost:5432/multitenant");
+                      dataSourceBuilder.username       ("postgres");
+                      dataSourceBuilder.password       ("letmein");
                       dataSourceBuilder.driverClassName("org.postgresql.Driver");
     return            dataSourceBuilder.build();
   }

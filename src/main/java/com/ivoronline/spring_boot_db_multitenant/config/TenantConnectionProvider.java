@@ -1,6 +1,9 @@
 package com.ivoronline.spring_boot_db_multitenant.config;
 
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,6 +14,12 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
   private DataSource datasource;
 
+  @Bean
+  public HibernatePropertiesCustomizer tenantConnectionProviderCustomizer(TenantConnectionProvider tenantConnectionProvider) {
+    return hibernateProperties -> {
+      hibernateProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, tenantConnectionProvider);
+    };
+  }
   public TenantConnectionProvider(DataSource dataSource) {
     this.datasource = dataSource;
   }
@@ -28,8 +37,8 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
   @Override
   public Connection getConnection(String tenantIdentifier) throws SQLException {
     final Connection connection = getAnyConnection();
-    //connection.createStatement().execute(String.format("SET SCHEMA \"%s\";", tenantIdentifier));
-    connection.createStatement().execute("SET Schema 'public'");
+    connection.createStatement().execute(String.format("SET SCHEMA '%s';", tenantIdentifier));
+    //connection.createStatement().execute("SET Schema 'ivor1'");
     return connection;
   }
 
@@ -39,20 +48,13 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
     connection.createStatement().execute("SET Schema 'public'");
     releaseAnyConnection(connection);
   }
+  @Override
+  public boolean supportsAggressiveRelease() { return false; }
 
   @Override
-  public boolean supportsAggressiveRelease() {
-    return false;
-  }
+  public boolean isUnwrappableAs(Class unwrapType) { return false; }
 
   @Override
-  public boolean isUnwrappableAs(Class unwrapType) {
-    return false;
-  }
-
-  @Override
-  public <T> T unwrap(Class<T> unwrapType) {
-    return null;
-  }
+  public <T> T unwrap(Class<T> unwrapType) { return null; }
 
 }
